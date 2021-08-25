@@ -1,6 +1,14 @@
 version: '3.7'
 
 services:
+  db:
+    image: postgres
+    ports:
+      - "5432"
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
   app:
     build:
       context: .
@@ -8,6 +16,8 @@ services:
       - "8000:8000"
     volumes:
       - ./django-core:/django-core
+    depends_on: 
+      - db
     command: sh -c "python manage.py runserver 0.0.0.0:8000"
     environment:
       - DEBUG=1

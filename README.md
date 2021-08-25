@@ -11,6 +11,16 @@
         - `docker compose up --build`
     - Production
         - `docker compose -f docker-compose-deploy.yml up --build`
+    - `--build`
+        - Builds the image before starting the container
+1. Run Commands
+    - Local Development
+        - `docker compose run app python manage.py <command>`
+    - Production
+        - `docker compose -f docker-compose-deploy.yml run app python manage.py <command>`
+    - `<command>`:
+        - `makemigrations`
+        - `migrate`
 
 ## Repeat Instructions
 
@@ -19,17 +29,6 @@ Follow these instructions to recreate the Docker container from scratch.
 ### Setup Python
 
 1. Install Python
-1. Setup virtual environment
-    1. Create environment
-        - `python3 -m venv env`
-    1. Activate environment
-        - `source env/bin/activate`
-    1. Install packages
-        - `pip install django djangorestframework uWSGI`
-1. Create Django project
-    - `django-admin startproject project .`
-1. Create Django app
-    - `python manage.py startapp app`
 
 ### Setup Django/uWSGI
 

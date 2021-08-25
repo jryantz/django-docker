@@ -1,11 +1,21 @@
 version: '3.7'
 
 services:
+  db:
+    image: postgres
+    ports:
+      - "5432"
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
   app:
     build:
       context: .
     volumes:
       - static_data:/vol/web
+    depends_on: 
+      - db
     environment: 
       - SECRET_KEY=somekey
       - ALLOWED_HOSTS=127.0.0.1,localhost
@@ -13,10 +23,10 @@ services:
   proxy:
     build:
       context: ./nginx
-    volumes:
-      - static_data:/vol/static
     ports:
       - "8080:8080"
+    volumes:
+      - static_data:/vol/static
     depends_on:
       - app
 
