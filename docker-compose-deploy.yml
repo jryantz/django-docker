@@ -17,7 +17,7 @@ services:
     depends_on: 
       - db
     environment: 
-      - SECRET_KEY=somekey
+      - SECRET_KEY=django-insecure-_3rmr)&*&97dvt+x)q-zmsx5u=t@ne=_*)u%tcb-cs)7rfl4_@
       - ALLOWED_HOSTS=127.0.0.1,localhost
   
   proxy:

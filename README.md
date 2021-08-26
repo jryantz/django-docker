@@ -5,6 +5,10 @@
 1. Clone repository
 1. Update config
     1. Generate and update `SECRET_KEY` in `docker-compose-deploy.yml` file
+        ``` python
+        from django.core.management import utils
+        print(utils.get_random_secret_key())
+        ```
     1. Add site URLs to `ALLOWED_HOSTS` in `docker-compose-deploy.yml` file
 1. Run
     - Local Development
