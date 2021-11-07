@@ -1,20 +1,18 @@
-version: '3.7'
+version: '3'
 
 services:
   db:
     image: postgres
     ports:
-      - "5432"
-    environment: 
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASS=postgres
+      - 5432
+    env_file:
+      - ./db.env
 
   app:
     build:
       context: .
     ports:
-      - "8000:8000"
+      - 8000:8000
     volumes:
       - ./django-core:/django-core
     depends_on: 
@@ -22,3 +20,5 @@ services:
     command: sh -c "python manage.py runserver 0.0.0.0:8000"
     environment:
       - DEBUG=1
+    env_file:
+      - ./db.env

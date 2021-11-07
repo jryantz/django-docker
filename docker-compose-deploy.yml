@@ -1,14 +1,12 @@
-version: '3.7'
+version: '3'
 
 services:
   db:
     image: postgres
     ports:
-      - "5432"
-    environment: 
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASS=postgres
+      - 5432
+    env_file:
+      - ./db.env
 
   app:
     build:
@@ -20,6 +18,8 @@ services:
     environment: 
       - SECRET_KEY=django-insecure-_3rmr)&*&97dvt+x)q-zmsx5u=t@ne=_*)u%tcb-cs)7rfl4_@
       - ALLOWED_HOSTS=127.0.0.1,localhost
+    env_file:
+      - ./db.env
   
   proxy:
     build:
