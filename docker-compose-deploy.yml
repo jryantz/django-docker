@@ -1,35 +1,43 @@
 version: '3'
 
 services:
-  db:
-    image: postgres
-    ports:
-      - 5432
-    env_file:
-      - ./db.env
-
   app:
     build:
       context: .
+    restart: always
     volumes:
-      - static_data:/vol/web
+      - static-data:/vol/web
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
     depends_on: 
       - db
-    environment: 
-      - SECRET_KEY=django-insecure-_3rmr)&*&97dvt+x)q-zmsx5u=t@ne=_*)u%tcb-cs)7rfl4_@
-      - ALLOWED_HOSTS=127.0.0.1,localhost
-    env_file:
-      - ./db.env
+  
+  db:
+    image: postgres:13-alpine
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
   
   proxy:
     build:
-      context: ./nginx
-    ports:
-      - "8080:8080"
-    volumes:
-      - static_data:/vol/static
+      context: ./proxy
+    restart: always
     depends_on:
       - app
+    ports:
+      - 80:8000
+    volumes:
+      - static-data:/vol/static
 
 volumes:
-  static_data:
+  postgres-data:
+  static-data:
