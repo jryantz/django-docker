@@ -1,26 +1,30 @@
-FROM python:3.9-alpine
+FROM python:3.9-alpine3.14
 
-ENV PATH="/scripts:${PATH}"
+ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /requirements.txt
-RUN apk add --update --no-cache gcc libc-dev postgresql-libs
-RUN apk add --update --no-cache --virtual .tmp linux-headers postgresql-dev
-RUN pip install -r /requirements.txt
-RUN apk del .tmp
-
-RUN mkdir /django-core
-COPY ./django-core /django-core
-WORKDIR /django-core
+COPY ./app /app
 COPY ./scripts /scripts
 
-RUN chmod +x /scripts/*
+WORKDIR /app
+EXPOSE 8000
 
-RUN mkdir -p /vol/web/media
-RUN mkdir -p /vol/web/static
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp \
+        build-base musl-dev postgresql-dev linux-headers && \
+    /py/bin/pip install -r /requirements.txt && \
+    apk del .tmp && \
+    adduser --disabled-password --no-create-home app && \
+    mkdir -p /vol/web/static && \
+    mkdir -p /vol/web/media && \
+    chown -R app:app /vol && \
+    chmod -R 755 /vol && \
+    chmod -R +x /scripts
 
-RUN adduser -D user
-RUN chown -R user:user /vol
-RUN chmod -R 755 /vol/web
-USER user
+ENV PATH="/scripts:/py/bin:$PATH"
 
-CMD ["entrypoint.sh"]
+USER app
+
+CMD ["run.sh"]
